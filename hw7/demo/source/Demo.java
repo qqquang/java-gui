@@ -37,6 +37,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
 import javafx.scene.shape.Circle;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 /**
  *
  * @author Quang Nguyen
@@ -53,12 +56,15 @@ public class Demo extends Application {
     Scene scene;
     Stage stage;
 
-    
+    Text t1,t2,t3,t4,t5,t6,t7;
+    Button button1,button2,button3;
+    Slider slHorizontal;
+    Arc arc1;
+    Circle circle;
+
     public void start(Stage stage) {
        
        // root.getChildren().addAll(pane1,button1,button2,button3);//first panne the controls
-        //createCricle();
-        //createSlider
         root = createFrontPage();
         scene= new Scene(root,700,600,Color.GRAY);
         stage.setTitle("Problem DEMO");
@@ -66,44 +72,30 @@ public class Demo extends Application {
         stage.show();
     }
     
-    Text t1,t2,t3,t4,t5,t6,t7;
-    Button button1,button2,button3;
-    Slider slHorizontal;
-    Arc arc1;
-    Circle circle;
-    ArrayList <Arc> arcs = new ArrayList<Arc>();
 
 
-    public void addArc(double numArc){
-        Circle circle = new Circle();        
-        circle.setCenterX(250);        
-        circle.setCenterY(250);        
-        circle.setRadius(150);        
-        circle.setStroke(Color.BLUE);        
-        circle.setFill(Color.TRANSPARENT);
+    public void addArc(double numArc, Slider hSlider, Circle cir){
+
 
         double splitCircle = 0;
         double nextArcLocation = 0;
         double arcSize = 0;
-        pane3.getChildren().addAll(slHorizontal, circle);
-        pane3.getChildren().addAll(arcs);
         pane3.getChildren().clear();
         
-        arcs.clear();
         splitCircle = 360/numArc;
         nextArcLocation = 360/numArc;
-        System.out.println(numArc);
         arcSize = splitCircle/3;
+
+        pane3.getChildren().addAll(hSlider, cir);
 
         for(int i = 0; i < numArc; i++){
             Arc arc1 = new Arc(250, 250, 150, 150, splitCircle, arcSize); //Create an arc    
             arc1.setStyle ("-fx-fill:red;-fx-type:round;-fx-stroke-width:5");    
             arc1.setType(ArcType.ROUND);
-            arcs.add(arc1);
+            pane3.getChildren().addAll(arc1);
             splitCircle += nextArcLocation;
         }
-        pane3.getChildren().addAll(slHorizontal, circle);
-        pane3.getChildren().addAll(arcs);
+        
     }
 
     public Pane createFrontPage()
@@ -151,9 +143,10 @@ public class Demo extends Application {
         slHorizontal.setStyle("-fx-border-color: blue;-fx-border-radius: 4;-fx-border-width: 4;");
         slHorizontal.setMajorTickUnit(1);
         slHorizontal.setBlockIncrement(1);
+        slHorizontal.setMinorTickCount(0);
         slHorizontal.setSnapToTicks(true);
         slHorizontal.setMinWidth(500);
-        slHorizontal.setValue(7);
+        slHorizontal.setValue(1);
 
         
 
@@ -165,13 +158,7 @@ public class Demo extends Application {
         circle.setFill(Color.TRANSPARENT);
         
         slHorizontal.valueProperty().addListener(ov ->       
-        pane3.getChildren().clear());
-
-        slHorizontal.valueProperty().addListener(ov ->       
-        pane3.getChildren().addAll(slHorizontal, circle));
-        
-        slHorizontal.valueProperty().addListener(ov ->       
-        slHorizontal.getValue());
+        addArc(slHorizontal.getValue(), slHorizontal, circle));
 
        //
         pane1.getChildren().addAll(t2,t3,t4,t5);
@@ -182,7 +169,7 @@ public class Demo extends Application {
 
         splitCircle = 360/slHorizontal.getValue();
         nextArcLocation = 360/slHorizontal.getValue();
-        System.out.println(slHorizontal.getValue());
+        
         arcSize = splitCircle/3;
 
         for(int i = 0; i < slHorizontal.getValue(); i++){
